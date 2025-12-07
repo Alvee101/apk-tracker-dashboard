@@ -21,7 +21,7 @@ export default function Dashboard() {
     setLoading(true)
     
     const { data: appsData } = await supabase
-      . from('apps')
+      .from('apps')
       .select('*')
       .order('created_at', { ascending: false })
     
@@ -55,8 +55,8 @@ export default function Dashboard() {
         package_name: packageName 
       }])
 
-    if (! error) {
-      alert(`App registered!  App Key: ${appKey}`)
+    if (!error) {
+      alert(`App registered! App Key: ${appKey}`)
       setAppName('')
       setPackageName('')
       fetchData()
@@ -68,7 +68,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-xl">Loading... </p>
+        <p className="text-xl">Loading...</p>
       </div>
     )
   }
@@ -86,7 +86,7 @@ export default function Dashboard() {
             <input
               type="text"
               value={appName}
-              onChange={(e) => setAppName(e.target. value)}
+              onChange={(e) => setAppName(e.target.value)}
               className="w-full p-2 border rounded"
               required
             />
@@ -115,7 +115,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-blue-100 p-6 rounded-lg">
           <h3 className="text-xl font-bold mb-2">Total Apps</h3>
-          <p className="text-4xl font-bold">{apps. length}</p>
+          <p className="text-4xl font-bold">{apps.length}</p>
         </div>
         <div className="bg-green-100 p-6 rounded-lg">
           <h3 className="text-xl font-bold mb-2">Total Installs</h3>
@@ -143,15 +143,15 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {apps.map((app) => (
-                <tr key={app. id} className="border-b">
+                <tr key={app.id} className="border-b">
                   <td className="p-3">{app.app_name}</td>
                   <td className="p-3">{app.package_name}</td>
                   <td className="p-3 font-mono text-sm">{app.app_key}</td>
                   <td className="p-3">
-                    {installs.filter(i => i.app_key === app.app_key).length}
+                    {installs.filter((i) => i.app_key === app.app_key).length}
                   </td>
                   <td className="p-3">
-                    {opens. filter(o => o.app_key === app.app_key). length}
+                    {opens.filter((o) => o.app_key === app.app_key).length}
                   </td>
                 </tr>
               ))}
@@ -168,7 +168,7 @@ export default function Dashboard() {
             <div key={install.id} className="p-3 bg-gray-50 rounded">
               <p className="font-medium">{install.package_name}</p>
               <p className="text-sm text-gray-600">
-                Device: {install.device_id} | {new Date(install.installed_at). toLocaleString()}
+                Device: {install.device_id} | {new Date(install.installed_at).toLocaleString()}
               </p>
             </div>
           ))}
