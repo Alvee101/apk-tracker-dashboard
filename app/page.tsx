@@ -1,21 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase'
-
-interface App {
-  id: number
-  app_key: string
-  app_name: string
-  package_name: string
-  created_at: string
-}
-
-interface AppStats {
-  app_key: string
-  installs: number
-  opens: number
-}
+import { supabase, type App } from '@/lib/supabase'
 
 interface AppWithStats extends App {
   installs: number
@@ -51,16 +37,14 @@ export default function Dashboard() {
   const [deleteAppId, setDeleteAppId] = useState<number | null>(null)
   const [deleteAppName, setDeleteAppName] = useState('')
 
-  const supabase = createClient()
-
   // Fetch apps and their stats
   const fetchApps = async () => {
     try {
       setLoading(true)
 
-      // Fetch all registered apps
+      // Fetch all apps from 'apps' table
       const { data: appsData, error: appsError } = await supabase
-        .from('registered_apps')
+        .from('apps')
         .select('*')
         .order('created_at', { ascending: false })
 
@@ -141,9 +125,9 @@ export default function Dashboard() {
     try {
       const appKey = generateAppKey()
 
-      // Insert into database
+      // Insert into 'apps' table
       const { error } = await supabase
-        .from('registered_apps')
+        .from('apps')
         .insert([
           {
             app_key: appKey,
@@ -201,7 +185,7 @@ export default function Dashboard() {
 
     try {
       const { error } = await supabase
-        .from('registered_apps')
+        .from('apps')
         .update({
           app_name: editAppName,
           package_name: editPackageName
@@ -212,7 +196,7 @@ export default function Dashboard() {
 
       setShowEditModal(false)
       fetchApps()
-      showNotification('App updated successfully!', 'green')
+      alert('✅ App updated successfully!')
 
     } catch (error) {
       console.error('Error updating app:', error)
@@ -234,7 +218,7 @@ export default function Dashboard() {
     try {
       // Get app key first
       const { data: appData } = await supabase
-        .from('registered_apps')
+        .from('apps')
         .select('app_key')
         .eq('id', deleteAppId)
         .single()
@@ -255,7 +239,7 @@ export default function Dashboard() {
 
       // Delete the app
       const { error } = await supabase
-        .from('registered_apps')
+        .from('apps')
         .delete()
         .eq('id', deleteAppId)
 
@@ -263,18 +247,12 @@ export default function Dashboard() {
 
       setShowDeleteModal(false)
       fetchApps()
-      showNotification('App deleted successfully!', 'red')
+      alert('✅ App deleted successfully!')
 
     } catch (error) {
       console.error('Error deleting app:', error)
       alert('Failed to delete app. Please try again.')
     }
-  }
-
-  // Show notification
-  const showNotification = (message: string, color: string) => {
-    // You can implement a toast notification here
-    console.log(`${color}: ${message}`)
   }
 
   return (
@@ -480,6 +458,8 @@ export default function Dashboard() {
         </div>
       </main>
 
+      {/* All Modals */}
+      
       {/* Confirm Modal */}
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
